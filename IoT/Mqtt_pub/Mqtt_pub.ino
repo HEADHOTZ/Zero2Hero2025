@@ -1,11 +1,3 @@
-/*************************************************************
-  Project : ESP32-S3 MQTT Publisher
-  Description : Publishes "Hello World!" every 1 second 
-                to topic "myMessage" using Mosquitto Broker
-  Hardware : ESP32-S3
-  Author : Age of Robotics
-*************************************************************/
-
 #include <WiFi.h>          // WiFi library for ESP32
 #include <PubSubClient.h>  // MQTT library
 
@@ -14,12 +6,15 @@ const char* ssid = "Yo";        // <-- Replace with your WiFi SSID
 const char* password = "1234566495"; // <-- Replace with your WiFi Password
 
 /************** MQTT Broker Settings *******************/
-const char* mqtt_server_ip = "192.168.1.17";  // <-- Replace with your Broker IP address
+const char* mqtt_server = "test.mosquitto.org";  // <-- Replace with your Broker IP address
 const int mqtt_port = 1883;                     // Default MQTT port
+
+/************** MQTT Topics ***************************/
+const char* sensor_topic = "67015080/sensor";  // Topic to publish sensor
 
 /************** Object Declarations ********************/
 WiFiClient wifiClient;         // Create a WiFi client
-PubSubClient mqttClient(wifiClient);  // Create an MQTT client using WiFi
+PubSubClient mqttClient(wifiClient);  // Create an MQTT client using WiFi 
 
 /************** Function to Connect to WiFi *************/
 void connectToWiFi() {
@@ -56,22 +51,13 @@ void reconnectToMQTT() {
   }
 }
 
-/**************Blink Led Function************/
-void blinkLed(){
-  digitalWrite(LED_BUILTIN,HIGH);
-  delay(200);
-  digitalWrite(LED_BUILTIN, LOW);
-}
-
 /************** Arduino Setup Function *************/
 void setup() {
   Serial.begin(115200); // Start Serial Monitor
   delay(100);           // Short delay for stability
 
-  pinMode(LED_BUILTIN, OUTPUT); //Setup LED Pin as Outut
-
   connectToWiFi();       // Connect to WiFi
-  mqttClient.setServer(mqtt_server_ip, mqtt_port); // Set MQTT Broker
+  mqttClient.setServer(mqtt_server, mqtt_port); // Set MQTT Broker
 }
 
 /************** Arduino Loop Function *************/
@@ -92,7 +78,6 @@ void loop() {
     String outgoingMessage = "Hello World!";     // Prepare the message
     Serial.print("Publishing to topic 'myMessage': ");
     Serial.println(outgoingMessage);
-    mqttClient.publish("myMessage", outgoingMessage.c_str()); // Publish to topic
-    blinkLed();
+    mqttClient.publish(sensor_topic , outgoingMessage.c_str()); // Publish to topic
   }
 }

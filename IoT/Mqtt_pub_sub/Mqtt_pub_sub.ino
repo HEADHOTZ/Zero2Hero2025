@@ -1,12 +1,3 @@
-/*************************************************************
-  Project : ESP32-S3 MQTT Publisher with DHT11 (Unified API)
-  Description : Publishes temperature and humidity separately
-                to two MQTT topics every 1 second using
-                Adafruit Unified Sensor API for DHT11.
-  Hardware : ESP32-S3-WROOM-1, DHT11 Sensor on GPIO 10
-  Author : Age of Robotics (Modified with Unified Comments)
-*************************************************************/
-
 #include <WiFi.h>             // WiFi library for ESP32 (by Espressif)
 #include <PubSubClient.h>     // MQTT client library (by Nick O'Leary)
 
@@ -15,11 +6,13 @@ const char* ssid = "Yo";              // <-- Replace with your WiFi SSID
 const char* password = "1234566495";  // <-- Replace with your WiFi Password
 
 /************** MQTT Broker Settings *******************/
-const char* mqtt_server_ip = "10.44.188.224";  // <-- Replace with your MQTT Broker IP
+const char* mqtt_server = "test.mosquitto.org";  // <-- Replace with your MQTT Broker IP
 const int mqtt_port = 1883;                    // Default MQTT port
 
 /************** MQTT Topics ***************************/
-const char* sensor_topic = "IoT/sensor";  // Topic to publish sensor
+const char* pub_topic = "67015080/sensor";  // Topic to publish sensor
+
+const char* sub_topic = "67015080/command";   // Topic to subscirbe for Node-RED
 
 /************** MQTT Client Declarations ***************/
 WiFiClient wifiClient;
@@ -52,7 +45,7 @@ void reconnectToMQTT() {
     Serial.print("Connecting to MQTT Client...");
     if (mqttClient.connect("ESP32_S3_Client")) {
       Serial.println("connected to MQTT broker!");
-      mqttClient.subscribe("IoT/cmd");  // Subscribe to topic after successful connection
+      mqttClient.subscribe(sub_topic);  // Subscribe to topic after successful connection
     } else {
       Serial.print("failed with state ");
       Serial.print(mqttClient.state());
@@ -73,11 +66,11 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
   incomingMessage.trim();  // Remove trailing whitespace or newline
 
   // Act only if topic is "ledState"
-  if (String(topic) == "IoT/cmd") {
-    if (incomingMessage == "start") {
+  if (String(topic) == sub_topic) {
+    if (incomingMessage == "on") {
       state_cmd = true;
       Serial.println("true");
-    } else if (incomingMessage == "stop") {
+    } else if (incomingMessage == "off") {
       state_cmd = false;
       Serial.println("false");
     }
@@ -103,7 +96,7 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 
   connectToWiFi();                                  // Connect to WiFi
-  mqttClient.setServer(mqtt_server_ip, mqtt_port);  // Set MQTT server
+  mqttClient.setServer(mqtt_server, mqtt_port);  // Set MQTT server
   mqttClient.setCallback(mqttCallback);             // Set the callback function
 }
 
@@ -115,12 +108,10 @@ void loop() {
 
   if (state_cmd == true) {
     rand_number = random(100);
-    char msg[10];
-    sprintf(msg, "%d", rand_number);
     
     if (currentMillis - previousMillis >= interval) {
       previousMillis = currentMillis; 
-      mqttClient.publish(sensor_topic, msg);
+      mqttClient.publish(pub_topic, String(rand_number).c_str());
       BlinkLed();
     }
   } else {

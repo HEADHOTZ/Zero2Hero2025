@@ -1,0 +1,281 @@
+[
+    {
+        "id": "7367dae640173984",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "68c5f06b55da95b9",
+        "type": "inject",
+        "z": "7367dae640173984",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "iso",
+        "payloadType": "date",
+        "x": 240,
+        "y": 200,
+        "wires": [
+            [
+                "c8e5a6f83bf0f189"
+            ]
+        ]
+    },
+    {
+        "id": "c8e5a6f83bf0f189",
+        "type": "debug",
+        "z": "7367dae640173984",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 480,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "5afe21bf3fec9220",
+        "type": "mqtt in",
+        "z": "7367dae640173984",
+        "name": "",
+        "topic": "67015080/sensor",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "f93234d205adb5b3",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 260,
+        "y": 320,
+        "wires": [
+            [
+                "8039e02e63d647cf",
+                "479ca0d60b0b51d6"
+            ]
+        ]
+    },
+    {
+        "id": "7b957dd1be53eea4",
+        "type": "ui_switch",
+        "z": "7367dae640173984",
+        "name": "",
+        "label": "switch",
+        "tooltip": "",
+        "group": "a56618d910d74947",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "on",
+        "onvalueType": "str",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "off",
+        "offvalueType": "str",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 230,
+        "y": 440,
+        "wires": [
+            [
+                "41081f25a187df37"
+            ]
+        ]
+    },
+    {
+        "id": "41081f25a187df37",
+        "type": "mqtt out",
+        "z": "7367dae640173984",
+        "name": "",
+        "topic": "67015080/command",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "f93234d205adb5b3",
+        "x": 480,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "8039e02e63d647cf",
+        "type": "ui_gauge",
+        "z": "7367dae640173984",
+        "name": "",
+        "group": "01678ceabbead7da",
+        "order": 1,
+        "width": 6,
+        "height": 3,
+        "gtype": "gage",
+        "title": "gauge",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 470,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "479ca0d60b0b51d6",
+        "type": "ui_chart",
+        "z": "7367dae640173984",
+        "name": "",
+        "group": "01678ceabbead7da",
+        "order": 2,
+        "width": 6,
+        "height": 3,
+        "label": "chart",
+        "chartType": "line",
+        "legend": "false",
+        "xformat": "HH:mm:ss",
+        "interpolate": "linear",
+        "nodata": "",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": false,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 490,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f93234d205adb5b3",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "test.mosquitto.org",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "a56618d910d74947",
+        "type": "ui_group",
+        "name": "Switch",
+        "tab": "a7ec6820c5ef6b42",
+        "order": 1,
+        "disp": true,
+        "width": 6,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "01678ceabbead7da",
+        "type": "ui_group",
+        "name": "Chart",
+        "tab": "f5028c117b57749d",
+        "order": 2,
+        "disp": true,
+        "width": 12,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "a7ec6820c5ef6b42",
+        "type": "ui_tab",
+        "name": "Control Page",
+        "icon": "dashboard",
+        "order": 1,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "f5028c117b57749d",
+        "type": "ui_tab",
+        "name": "Dashboard Page",
+        "icon": "dashboard",
+        "order": 2,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "5c635890c9530304",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.6.6"
+        }
+    }
+]

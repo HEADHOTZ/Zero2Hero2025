@@ -1,12 +1,3 @@
-/*************************************************************
-  Project : ESP32-S3 MQTT Subscriber
-  Description : Subscribes to topic "ledState"
-                Turns ON/OFF LED on pin 13 based on message
-                Prints message to Serial Monitor only on state change
-  Hardware : ESP32-S3
-  Author : Age of Robotics
-*************************************************************/
-
 #include <WiFi.h>           // WiFi library for ESP32
 #include <PubSubClient.h>   // MQTT library
 
@@ -15,8 +6,11 @@ const char* ssid = "Yo";           // <-- Replace with your WiFi SSID
 const char* password = "1234566495";  // <-- Replace with your WiFi Password
 
 /************** MQTT Broker Settings *******************/
-const char* mqtt_server_ip = "10.44.188.224";  // <-- Replace with your Broker IP address
+const char* mqtt_server = "test.mosquitto.org";  // <-- Replace with your Broker IP address
 const int mqtt_port = 1883;                     // Default MQTT port
+
+/************** MQTT Topics ***************************/
+const char* sub_topic = "67015080/command";  // Topic to subscribe sensor
 
 /************** Object Declarations ********************/
 WiFiClient wifiClient;              // Create a WiFi client
@@ -24,7 +18,6 @@ PubSubClient mqttClient(wifiClient); // Create an MQTT client using WiFi
 
 /************** Global Variables ***********************/
 const int ledPin = LED_BUILTIN;             // LED connected to GPIO 13
-String currentLedState = "";       // Store the current LED state ("on" or "off")
 
 /************** Function to Connect to WiFi *************/
 void connectToWiFi() {
@@ -53,17 +46,15 @@ void mqttCallback(char* topic, byte* payload, unsigned int length) {
 
   incomingMessage.trim(); // Remove trailing whitespace or newline
 
-  // Act only if topic is "ledState"
-  if (String(topic) == "ledState") {
-    if (incomingMessage == "on" && currentLedState != "on") {
+  // Act only if topic is sub_topic
+  if (String(topic) == sub_topic) {
+    if (incomingMessage == "on") {
       digitalWrite(ledPin, HIGH);
       Serial.println("LED turned ON");
-      currentLedState = "on";
     }
-    else if (incomingMessage == "off" && currentLedState != "off") {
+    else if (incomingMessage == "off") {
       digitalWrite(ledPin, LOW);
       Serial.println("LED turned OFF");
-      currentLedState = "off";
     }
     // No action needed if state hasn't changed
   }
@@ -77,7 +68,7 @@ void reconnectToMQTT() {
     // Attempt to connect with a client ID
     if (mqttClient.connect("ESP32_S3_Client")) {
       Serial.println("connected to MQTT broker!");
-      mqttClient.subscribe("ledState"); // Subscribe to topic after successful connection
+      mqttClient.subscribe(sub_topic); // Subscribe to topic after successful connection
     }
     else {
       Serial.print("failed with state ");
@@ -97,7 +88,7 @@ void setup() {
   digitalWrite(ledPin, LOW);      // Ensure LED is initially OFF
 
   connectToWiFi();                          // Connect to WiFi
-  mqttClient.setServer(mqtt_server_ip, mqtt_port); // Set MQTT Broker
+  mqttClient.setServer(mqtt_server, mqtt_port); // Set MQTT Broker
   mqttClient.setCallback(mqttCallback);     // Set the callback function
 }
 
