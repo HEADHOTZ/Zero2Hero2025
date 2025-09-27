@@ -2,12 +2,13 @@
 #include <PubSubClient.h>   // MQTT library
 
 /************** WiFi Network Credentials ****************/
-const char* ssid = "Yo";           // <-- Replace with your WiFi SSID
+const char* ssid = "Yo1";           // <-- Replace with your WiFi SSID
 const char* password = "1234566495";  // <-- Replace with your WiFi Password
 
 /************** MQTT Broker Settings *******************/
 const char* mqtt_server = "test.mosquitto.org";  // <-- Replace with your Broker IP address
 const int mqtt_port = 1883;                     // Default MQTT port
+const char* client_id = "Bunyakorn";  // <-- Replace with your client_id
 
 /************** MQTT Topics ***************************/
 const char* sub_topic = "67015080/command";  // Topic to subscribe sensor
@@ -66,7 +67,7 @@ void reconnectToMQTT() {
     Serial.print("Connecting to MQTT Client...");
 
     // Attempt to connect with a client ID
-    if (mqttClient.connect("ESP32_S3_Client")) {
+    if (mqttClient.connect("client_id")) {
       Serial.println("connected to MQTT broker!");
       mqttClient.subscribe(sub_topic); // Subscribe to topic after successful connection
     }
